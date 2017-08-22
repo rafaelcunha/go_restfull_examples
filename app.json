@@ -1,0 +1,12 @@
+{
+  "name": "Go Kit Example1",
+  "description": "go-kit basic example",
+  "keywords": [
+    "go-kit",
+    "go"
+  ],
+  "image": "heroku/go:1.6",
+  "mount_dir": "src/github.com/heroku-examples/go-kit-ex1",
+  "website": "http://github.com/heroku-examples/go-kit-ex1",
+  "repository": "http://github.com/heroku-examples/go-kit-ex1"
+}
