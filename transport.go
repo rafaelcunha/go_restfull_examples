@@ -44,3 +44,33 @@ func decodeAddRequest(r *http.Request) (interface{}, error) {
 func encodeResponse(w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
+
+// ---  Publick Key   ---
+
+type addPKResponse struct {
+	V int `json:"publick_key"`
+}
+
+func (r addPKResponse) String() string {
+	return fmt.Sprintf("%s", r.V)
+}
+
+func makePKEndpoint(svc PublicKey) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(pkRequest)
+		v := svc.getPublickKey()
+		return addPKResponse{v}, nil
+	}
+}
+
+func decodePKRequest(r *http.Request) (interface{}, error) {
+	var req addRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+func encodePKResponse(w http.ResponseWriter, response interface{}) error {
+	return json.NewEncoder(w).Encode(response)
+}

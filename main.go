@@ -20,6 +20,39 @@ func main() {
 
 	ctx := context.Background()
 
+	c := &pkService{}
+
+	var svc endpoint.Endpoint
+	svc = makeAddEndpoint(c)
+
+	limit := ratelimit.NewBucket(2*time.Second, 1)
+	svc = kitratelimit.NewTokenBucketLimiter(limit)(svc)
+
+	requestPK := expvar.NewPublickKey("request.pk")
+	svc = metricsMiddleware(requestPK)(svc)
+	svc = loggingMiddlware(logger)(svc)
+
+	addHandler := httptransport.NewServer(
+		ctx,
+		svc,
+		decodePKRequest,
+		encodePKResponse,
+		httptransport.ServerBefore(beforeIDExtractor, beforePATHExtractor),
+	)
+
+	http.Handle("/publicKey", addHandler)
+
+	port := os.Getenv("PORT")
+	logger.Log("listening on", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		logger.Log("listen.error", err)
+	}
+
+	/*
+	logger := log.NewLogfmtLogger(os.Stdout)
+
+	ctx := context.Background()
+
 	c := &countService{}
 
 	var svc endpoint.Endpoint
@@ -47,4 +80,5 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		logger.Log("listen.error", err)
 	}
+	*/
 }

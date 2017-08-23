@@ -1,1 +1,1 @@
-web: go-kit-ex1
+web: go-mpcheckout-example

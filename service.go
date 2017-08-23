@@ -18,3 +18,16 @@ func (c *countService) Add(v int) int {
 	c.v += v
 	return c.v
 }
+
+// ---   Public Key   ---
+type PublicKey interface {
+	getPublickKey() string
+}
+
+type pkService struct {
+	const pk string = "APP_USR-d509bfad-d337-4619-ab22-21fd59541fb4"
+}
+
+func (pblicKey *pkService) getPublickKey() string {
+	return pblicKey.pk
+}
